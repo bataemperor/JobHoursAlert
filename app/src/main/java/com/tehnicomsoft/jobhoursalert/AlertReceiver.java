@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 /**
  * Created by aleksandar on 22.11.16..
@@ -23,14 +22,19 @@ public class AlertReceiver extends BroadcastReceiver {
     // Called when a broadcast is made targeting this class
     @Override
     public void onReceive(Context context, Intent intent) {
-        calendar = new GregorianCalendar();
-        calendarFive = new GregorianCalendar();
-        calendarFive.set(GregorianCalendar.HOUR_OF_DAY, 17);
-        difference = calendarFive.get(GregorianCalendar.HOUR_OF_DAY) - calendar.get(GregorianCalendar.HOUR_OF_DAY);
-        if (difference > 0 && difference < 9) {
+        calendar = Calendar.getInstance();
+        calendarFive = Calendar.getInstance();
+        calendarFive.set(Calendar.HOUR_OF_DAY, 17);
+        difference = calendarFive.get(Calendar.HOUR_OF_DAY) - calendar.get(Calendar.HOUR_OF_DAY);
+        if (conditions()) {
             createNotification(context, "Vreme na poslu", "Jos " + difference + "h " + "do kraja radnog vremena", "Alert");
         }
+    }
 
+    private boolean conditions() {
+        //only between working hours
+        //Not Saturday , Not Sunday
+        return difference > 0 && difference < 9 && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY;
     }
 
     private int getNotificationIcon() {
