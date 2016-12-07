@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
+import com.tehnicomsoft.jobhoursalert.utility.SettingsManager;
+
 import java.util.Calendar;
 
 /**
@@ -16,25 +18,32 @@ import java.util.Calendar;
  */
 
 public class AlertReceiver extends BroadcastReceiver {
-    Calendar calendar, calendarFive;
+    Calendar calendarCurrent, calenderStart, calendarEnd;
     int difference;
 
     // Called when a broadcast is made targeting this class
     @Override
     public void onReceive(Context context, Intent intent) {
-        calendar = Calendar.getInstance();
-        calendarFive = Calendar.getInstance();
-        calendarFive.set(Calendar.HOUR_OF_DAY, 17);
-        difference = calendarFive.get(Calendar.HOUR_OF_DAY) - calendar.get(Calendar.HOUR_OF_DAY);
         if (conditions()) {
             createNotification(context, "Vreme na poslu", "Jos " + difference + "h " + "do kraja radnog vremena", "Alert");
         }
     }
 
+    /**
+     * Only between working hours
+     * Not Saturday , Not Sunday
+     */
     private boolean conditions() {
-        //only between working hours
-        //Not Saturday , Not Sunday
-        return difference > 0 && difference < 9 && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY;
+        calendarCurrent = Calendar.getInstance();
+        calenderStart = Calendar.getInstance();
+        calenderStart.setTimeInMillis(SettingsManager.getInstance().getStartTime());
+        calendarEnd = Calendar.getInstance();
+        calendarEnd.setTimeInMillis(SettingsManager.getInstance().getEndTime());
+        difference = calendarEnd.get(Calendar.HOUR_OF_DAY) - calendarCurrent.get(Calendar.HOUR_OF_DAY);
+        int numberOfWorkingHoursInOneDay = calendarEnd.get(Calendar.HOUR_OF_DAY) - calenderStart.get(Calendar.HOUR_OF_DAY);
+        return difference >= 0 && difference <= numberOfWorkingHoursInOneDay
+                && calendarCurrent.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+                && calendarCurrent.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY;
     }
 
     private int getNotificationIcon() {
@@ -60,9 +69,10 @@ public class AlertReceiver extends BroadcastReceiver {
                 return R.drawable.so_hapy;
             case 1:
                 return R.drawable.very_happy;
+            case 0:
+                return R.drawable.in_love;
             default:
                 return R.drawable.happy;
-
         }
     }
 
@@ -89,7 +99,7 @@ public class AlertReceiver extends BroadcastReceiver {
         // DEFAULT_SOUND : Make sound
         // DEFAULT_VIBRATE : Vibrate
         // DEFAULT_LIGHTS : Use the default light notification
-        mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+        mBuilder.setDefaults(Notification.DEFAULT_SOUND);
 
         // Auto cancels the notification when clicked on in the task bar
         mBuilder.setAutoCancel(true);
