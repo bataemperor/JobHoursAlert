@@ -1,6 +1,10 @@
 package com.tehnicomsoft.jobhoursalert;
 
+import android.app.AlarmManager;
 import android.app.Application;
+
+import com.squareup.leakcanary.LeakCanary;
+import com.tehnicomsoft.jobhoursalert.utility.SettingsManager;
 
 
 /**
@@ -13,7 +17,15 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
         app = this;
+        if (SettingsManager.getInstance().getInterval() == -1)
+            SettingsManager.getInstance().setInterval(AlarmManager.INTERVAL_HALF_HOUR);
     }
 
     public static App getInstance() {

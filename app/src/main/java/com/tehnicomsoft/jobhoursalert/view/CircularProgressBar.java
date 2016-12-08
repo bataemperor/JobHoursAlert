@@ -33,6 +33,7 @@ import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
@@ -41,6 +42,8 @@ import com.tehnicomsoft.jobhoursalert.R;
 
 public class CircularProgressBar extends ProgressBar {
     private static final String TAG = "CircularProgressBar";
+
+    // The gesture threshold expressed in dp
 
     private static final int STROKE_WIDTH = 20;
 
@@ -154,12 +157,18 @@ public class CircularProgressBar extends ProgressBar {
     }
 
     public void setTitleTextSize(int size) {
-        mTitlePaint.setTextSize(size);
+        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                size, getResources().getDisplayMetrics());
+        // Use mGestureThreshold as a distance in pixels...
+        mTitlePaint.setTextSize(pixel);
         invalidate();
     }
 
     public void setSubtitleTextSize(int size) {
-        mSubtitlePaint.setTextSize(size);
+        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                size, getResources().getDisplayMetrics());
+        // Use mGestureThreshold as a distance in pixels...
+        mSubtitlePaint.setTextSize(pixel);
         invalidate();
     }
 
@@ -186,7 +195,7 @@ public class CircularProgressBar extends ProgressBar {
             }
             canvas.drawText(mTitle, xPos, yPos, mTitlePaint);
 
-            yPos += titleHeight * 1.5;
+            yPos += titleHeight * 2.5;
             xPos = (int) (getMeasuredWidth() / 2 - mSubtitlePaint.measureText(mSubTitle) / 2);
 
             canvas.drawText(mSubTitle, xPos, yPos, mSubtitlePaint);

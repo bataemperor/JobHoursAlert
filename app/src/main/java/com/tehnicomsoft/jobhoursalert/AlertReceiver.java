@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 import com.tehnicomsoft.jobhoursalert.utility.SettingsManager;
+import com.tehnicomsoft.jobhoursalert.utility.Utility;
 
 import java.util.Calendar;
 
@@ -18,14 +19,14 @@ import java.util.Calendar;
  */
 
 public class AlertReceiver extends BroadcastReceiver {
-    Calendar calendarCurrent, calenderStart, calendarEnd;
+    Calendar calendarCurrent;
     int difference;
 
     // Called when a broadcast is made targeting this class
     @Override
     public void onReceive(Context context, Intent intent) {
         if (conditions()) {
-            createNotification(context, "Vreme na poslu", "Jos " + difference + "h " + "do kraja radnog vremena", "Alert");
+            createNotification(context, "Vreme na poslu", "Jos " + getOffSetOfEndTimeWithMinutes()+ "do kraja radnog vremena", "Alert");
         }
     }
 
@@ -35,15 +36,36 @@ public class AlertReceiver extends BroadcastReceiver {
      */
     private boolean conditions() {
         calendarCurrent = Calendar.getInstance();
-        calenderStart = Calendar.getInstance();
-        calenderStart.setTimeInMillis(SettingsManager.getInstance().getStartTime());
-        calendarEnd = Calendar.getInstance();
-        calendarEnd.setTimeInMillis(SettingsManager.getInstance().getEndTime());
-        difference = calendarEnd.get(Calendar.HOUR_OF_DAY) - calendarCurrent.get(Calendar.HOUR_OF_DAY);
-        int numberOfWorkingHoursInOneDay = calendarEnd.get(Calendar.HOUR_OF_DAY) - calenderStart.get(Calendar.HOUR_OF_DAY);
+        difference = getOffSetOfEndTime();
+        int numberOfWorkingHoursInOneDay = Utility.calcNumberOfWorkingHours();
         return difference >= 0 && difference <= numberOfWorkingHoursInOneDay
                 && calendarCurrent.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
                 && calendarCurrent.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY;
+    }
+
+    private int getOffSetOfEndTime() {
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTimeInMillis(SettingsManager.getInstance().getEndTime());
+        return calendarEnd.get(Calendar.HOUR_OF_DAY) - calendarCurrent.get(Calendar.HOUR_OF_DAY);
+    }
+
+    private String getOffSetOfEndTimeWithMinutes() {
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTimeInMillis(SettingsManager.getInstance().getEndTime());
+
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(Calendar.HOUR_OF_DAY, calendarEnd.get(Calendar.HOUR_OF_DAY));
+        endTime.set(Calendar.MINUTE, calendarEnd.get(Calendar.MINUTE));
+        endTime.set(Calendar.SECOND, calendarEnd.get(Calendar.SECOND));
+
+        long difference = endTime.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+
+        int minutes = (int) ((difference / (1000 * 60)) % 60);
+        int hours = (int) ((difference / (1000 * 60 * 60)) % 24);
+        if (minutes != 0) {
+            return hours + ":" + minutes+" ";
+        } else
+            return hours + "h ";
     }
 
     private int getNotificationIcon() {
@@ -80,7 +102,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
         // Define an Intent and an action to perform with it by another application
         PendingIntent notificIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, MainActivity.class), 0);
+                new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Builds a notification
         NotificationCompat.Builder mBuilder =

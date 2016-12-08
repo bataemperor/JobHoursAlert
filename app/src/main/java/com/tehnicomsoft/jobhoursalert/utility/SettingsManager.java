@@ -55,14 +55,14 @@ public class SettingsManager {
         return prefs.getBoolean(KEY.NOTIFICATIONS.toString(), false);
     }
 
-    public void setInterval(int interval) {
+    public void setInterval(long interval) {
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(KEY.INTERVAL.toString(), interval);
+        editor.putLong(KEY.INTERVAL.toString(), interval);
         editor.apply();
     }
 
-    public int getInterval() {
-        return prefs.getInt(KEY.INTERVAL.toString(), -1);
+    public long getInterval() {
+        return prefs.getLong(KEY.INTERVAL.toString(), -1);
     }
 
 }
