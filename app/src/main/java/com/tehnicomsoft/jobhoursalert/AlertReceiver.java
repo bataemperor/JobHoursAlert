@@ -26,22 +26,22 @@ public class AlertReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (conditions()) {
-            createNotification(context, "Vreme na poslu", "Jos " + getOffSetOfEndTimeWithMinutes()+ "do kraja radnog vremena", "Alert");
+            createNotification(context, "Vreme na poslu", "Jos " + getOffSetOfEndTimeWithMinutes() + "do kraja radnog vremena", "Alert");
         }
     }
 
     /**
      * Only between working hours
-     * Not Saturday , Not Sunday
+     * Not Weekend
      */
     private boolean conditions() {
         calendarCurrent = Calendar.getInstance();
         difference = getOffSetOfEndTime();
         int numberOfWorkingHoursInOneDay = Utility.calcNumberOfWorkingHours();
         return difference >= 0 && difference <= numberOfWorkingHoursInOneDay
-                && calendarCurrent.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
-                && calendarCurrent.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY;
+                && !Utility.isWeekend(calendarCurrent);
     }
+
 
     private int getOffSetOfEndTime() {
         Calendar calendarEnd = Calendar.getInstance();
@@ -63,7 +63,7 @@ public class AlertReceiver extends BroadcastReceiver {
         int minutes = (int) ((difference / (1000 * 60)) % 60);
         int hours = (int) ((difference / (1000 * 60 * 60)) % 24);
         if (minutes != 0) {
-            return hours + ":" + minutes+" ";
+            return hours + ":" + minutes + " ";
         } else
             return hours + "h ";
     }
@@ -102,7 +102,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
         // Define an Intent and an action to perform with it by another application
         PendingIntent notificIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Builds a notification
         NotificationCompat.Builder mBuilder =

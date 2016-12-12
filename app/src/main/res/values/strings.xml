@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JobHoursAlert</string>
+    <string name="app_name">Job Hours</string>
     <string name="time_from">From:\n%s</string>
     <string name="time_to">To:\n%s</string>
 </resources>

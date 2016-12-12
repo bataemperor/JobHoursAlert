@@ -14,4 +14,9 @@ public class Utility {
         calendarEnd.setTimeInMillis(SettingsManager.getInstance().getEndTime());
         return calendarEnd.get(Calendar.HOUR_OF_DAY) - calenderStart.get(Calendar.HOUR_OF_DAY);
     }
+
+    public static boolean isWeekend(Calendar calendarCurrent) {
+        return calendarCurrent.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+                || calendarCurrent.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+    }
 }

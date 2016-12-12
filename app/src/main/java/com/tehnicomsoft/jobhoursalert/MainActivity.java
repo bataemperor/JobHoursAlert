@@ -81,65 +81,65 @@ public class MainActivity extends AppCompatActivity {
         }
         if (SettingsManager.getInstance().getNotifications()) {
         }
-        endTime = Calendar.getInstance(Locale.getDefault());
-        endTime.set(Calendar.HOUR_OF_DAY, endCalendar.get(Calendar.HOUR_OF_DAY));
-        endTime.set(Calendar.MINUTE, 0);
-        endTime.set(Calendar.SECOND, 0);
+            endTime = Calendar.getInstance(Locale.getDefault());
+            endTime.set(Calendar.HOUR_OF_DAY, endCalendar.get(Calendar.HOUR_OF_DAY));
+            endTime.set(Calendar.MINUTE, 0);
+            endTime.set(Calendar.SECOND, 0);
 
-        startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, startCalendar.get(Calendar.HOUR_OF_DAY));
-        startTime.set(Calendar.MINUTE, startCalendar.get(Calendar.MINUTE));
-        startTime.set(Calendar.SECOND, startCalendar.get(Calendar.SECOND));
+            startTime = Calendar.getInstance();
+            startTime.set(Calendar.HOUR_OF_DAY, startCalendar.get(Calendar.HOUR_OF_DAY));
+            startTime.set(Calendar.MINUTE, startCalendar.get(Calendar.MINUTE));
+            startTime.set(Calendar.SECOND, startCalendar.get(Calendar.SECOND));
 
-        tvFrom.setText(getString(R.string.time_from, TIME_FORMAT.format(startCalendar.getTime())));
-        tvTo.setText(getString(R.string.time_to, TIME_FORMAT.format(endCalendar.getTime())));
-        cpb.setTitleTextSize(20);
-        cpb.setSubtitleTextSize(15);
+            tvFrom.setText(getString(R.string.time_from, TIME_FORMAT.format(startCalendar.getTime())));
+            tvTo.setText(getString(R.string.time_to, TIME_FORMAT.format(endCalendar.getTime())));
+            cpb.setTitleTextSize(20);
+            cpb.setSubtitleTextSize(15);
 
-        List<CharSequence> list = new ArrayList<>();
-        list.add("30min");
-        list.add("1h");
-        SpinnerMinutesAdapter dataAdapter = new SpinnerMinutesAdapter(this, 0, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(dataAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0 && SettingsManager.getInstance().getInterval() == AlarmManager.INTERVAL_HALF_HOUR) {
-                    return;
+            List<CharSequence> list = new ArrayList<>();
+            list.add("1h");
+            list.add("30min");
+            SpinnerMinutesAdapter dataAdapter = new SpinnerMinutesAdapter(this, 0, list);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(dataAdapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position == 0 && SettingsManager.getInstance().getInterval() == AlarmManager.INTERVAL_HOUR) {
+                        return;
+                    }
+                    if (position == 1 && SettingsManager.getInstance().getInterval() == AlarmManager.INTERVAL_HALF_HOUR) {
+                        return;
+                    }
+                    SettingsManager.getInstance().setInterval(position == 0 ? AlarmManager.INTERVAL_HALF_HOUR : AlarmManager.INTERVAL_HOUR);
+                    if (SettingsManager.getInstance().getNotifications()) {
+                        setAlarm(SettingsManager.getInstance().getNotifications());
+                    }
                 }
-                if (position == 1 && SettingsManager.getInstance().getInterval() == AlarmManager.INTERVAL_HOUR) {
-                    return;
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
                 }
-                SettingsManager.getInstance().setInterval(position == 0 ? AlarmManager.INTERVAL_HALF_HOUR : AlarmManager.INTERVAL_HOUR);
-                if (SettingsManager.getInstance().getNotifications()) {
-                    setAlarm(SettingsManager.getInstance().getNotifications());
+            });
+
+            handler = new Handler();
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    calculateProgress();
+                    handler.postDelayed(this, 1000);
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        handler = new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                calculateProgress();
-                handler.postDelayed(this, 1000);
-            }
-        };
-        swNotif.setChecked(SettingsManager.getInstance().getNotifications());
-        swNotif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SettingsManager.getInstance().setNotifications(isChecked);
-                setAlarm(isChecked);
-                Toast.makeText(MainActivity.this, isChecked ? "Notifications started" : "Notifications stopped", Toast.LENGTH_SHORT).show();
-            }
-        });
+            };
+            swNotif.setChecked(SettingsManager.getInstance().getNotifications());
+            swNotif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    SettingsManager.getInstance().setNotifications(isChecked);
+                    setAlarm(isChecked);
+                    Toast.makeText(MainActivity.this, isChecked ? "Notifications started" : "Notifications stopped", Toast.LENGTH_SHORT).show();
+                }
+            });
 //        handler.post(new Runnable() {
 //            @Override
 //            public void run() {
@@ -150,13 +150,15 @@ public class MainActivity extends AppCompatActivity {
 //                cpb.getLayoutParams().width = height / 4;
 //            }
 //        });
-        numberOfWorkingHours = Utility.calcNumberOfWorkingHours();
-    }
+            numberOfWorkingHours = Utility.calcNumberOfWorkingHours();
+        }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        handler.post(runnable);
+        if (!Utility.isWeekend(Calendar.getInstance()))
+            handler.post(runnable);
     }
 
     @Override

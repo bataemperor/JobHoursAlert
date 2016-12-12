@@ -25,7 +25,7 @@ public class App extends Application {
         LeakCanary.install(this);
         app = this;
         if (SettingsManager.getInstance().getInterval() == -1)
-            SettingsManager.getInstance().setInterval(AlarmManager.INTERVAL_HALF_HOUR);
+            SettingsManager.getInstance().setInterval(AlarmManager.INTERVAL_HOUR);
     }
 
     public static App getInstance() {
