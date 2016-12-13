@@ -1,0 +1,119 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:circular="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context=".MainActivity">
+
+    <com.tehnicomsoft.jobhoursalert.view.CircularProgressBar
+        android:id="@+id/cpb"
+        style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        circular:subtitle="subtitle"
+        circular:title="Title" />
+
+    <TextView
+        android:id="@+id/tvFrom"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_weight="1"
+        android:background="@drawable/background_time"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:padding="10dp"
+        android:text="@string/time_from"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+
+    <TextView
+        android:id="@+id/tvTo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/background_time"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:padding="10dp"
+        android:text="@string/time_to"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/tvNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="Notifications"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/swNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tvNotif"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/tvNotif"
+            android:background="?attr/selectableItemBackground" />
+
+        <RelativeLayout
+            android:id="@+id/rlNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/swNotif"
+            android:background="@drawable/button_background"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/interval_background"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:text="Choose interval :"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/spInterval"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#793838" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

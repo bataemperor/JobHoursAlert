@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 numberOfWorkingHours = Utility.calcNumberOfWorkingHours();
             }
         }, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), true);
-        timePickerDialogStart.setTitle("Choose start time");
+//        timePickerDialogStart.setTitle("Choose start time");
         timePickerDialogStart.show();
     }
 
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 numberOfWorkingHours = Utility.calcNumberOfWorkingHours();
             }
         }, endCalendar.get(Calendar.HOUR_OF_DAY), endCalendar.get(Calendar.MINUTE), true);
-        timePickerDialogEnd.setTitle("Choose end time");
+//        timePickerDialogEnd.setTitle("Choose end time");
         timePickerDialogEnd.show();
     }
 
