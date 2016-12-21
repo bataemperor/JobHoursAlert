@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.tehnicomsoft.jobhoursalert.adapter.SpinnerMinutesAdapter;
 import com.tehnicomsoft.jobhoursalert.utility.SettingsManager;
 import com.tehnicomsoft.jobhoursalert.utility.Utility;
 import com.tehnicomsoft.jobhoursalert.view.CircularProgressBar;
@@ -253,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
             int seconds = (int) (remainingTime / 1000) % 60;
             int minutes = (int) ((remainingTime / (1000 * 60)) % 60);
             int hours = (int) ((remainingTime / (1000 * 60 * 60)) % 24);
-            int progress = getProgress(remainingTime);
+            int progress = Utility.getProgress(remainingTime,numberOfWorkingHours);
             cpb.setProgress(progress);
             cpb.setTitle(getStringRemainingTime(seconds, minutes, hours));
             cpb.setSubTitle(progress + "%");
@@ -264,9 +265,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private int getProgress(long remainingTime) {
-        return 100 - (int) (((double) remainingTime / (numberOfWorkingHours * 60 * 60 * 1000) * 100));
-    }
+
 
     @NonNull
     private String getStringRemainingTime(int seconds, int minutes, int hours) {
@@ -277,49 +276,4 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-class SpinnerMinutesAdapter extends ArrayAdapter {
-    private Context context;
-    private List<CharSequence> minutesList;
-    private LayoutInflater inflater;
 
-    public SpinnerMinutesAdapter(Context context, int resource, List<CharSequence> itemList) {
-        super(context, resource, itemList);
-        this.context = context;
-        this.minutesList = itemList;
-        inflater = LayoutInflater.from(context);
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.layout_minutes_spinner_item, parent, false);
-            holder = new ViewHolder();
-            holder.tvMinutes = (TextView) convertView.findViewById(R.id.tvMinutes);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        holder.tvMinutes.setText(minutesList.get(position));
-        return convertView;
-    }
-
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.layout_minutes_spinner_item, parent, false);
-            holder = new ViewHolder();
-            holder.tvMinutes = (TextView) convertView.findViewById(R.id.tvMinutes);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        holder.tvMinutes.setText(minutesList.get(position));
-        return convertView;
-    }
-
-    class ViewHolder {
-        TextView tvMinutes;
-    }
-}

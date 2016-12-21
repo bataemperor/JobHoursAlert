@@ -19,4 +19,8 @@ public class Utility {
         return calendarCurrent.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
                 || calendarCurrent.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
     }
+
+    public static int getProgress(long remainingTime, long numberOfWorkingHours) {
+        return 100 - (int) (((double) remainingTime / (numberOfWorkingHours * 60 * 60 * 1000) * 100));
+    }
 }
