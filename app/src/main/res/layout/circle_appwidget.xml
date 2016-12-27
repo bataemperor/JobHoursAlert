@@ -8,11 +8,18 @@
 
     <TextView
         android:id="@+id/tvPercentage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_centerInParent="true"
         android:background="@drawable/shape_circle"
         android:gravity="center"
         android:textColor="@color/circular_progress_default_progress" />
+
+    <ProgressBar
+        android:id="@+id/pb"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>
